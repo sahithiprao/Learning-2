@@ -1,0 +1,129 @@
+Big Data: storing and processing of large volumes of data in real time or by batch processing
+
+Units:
+1 Bit - b- 0 or 1
+1 Byte - B - 8 bits
+1 Kilobyte- KB - 1026 Bytes
+1 Megabyte - MB- 1026 KB
+1 Gegabyte - GB- 1026 MB
+1 Terabyte -TB- 1026 GB
+1 Petabyte - PB-1026 TB
+1 Exabyte- EB- 1026 PB
+
+5 V's:
+Volume
+Velocity-data speed
+Variety- diff sources
+    Structured-rows and columns like csv
+    Semistructured- not tabular format but like keys and values(json) etc
+    unstructured- images,unstruct files etc..
+Veracity
+Value
+
+Splitting the storage to multiple storage - DISTRIBUTED STORAGE
+1 TB data storage is split to 5 200GB storage 
+
+processing the data from multiple storages and local memory is called DISTRIBUTED COMPUTING
+
+Hadoop Concepts:
+
+2 core components
+HDFS(DS)
+MapReduce(DC)
+
+Master-slave Architecture:
+cluster of machines work together with local storage and memory to process the data called as Data Nodes/Slaves/Worker nodes through prallel processing. Name node is the master node that allocates resources to slaves and data for processing. This master node manages all the slave nodes.This type of arch is called Mater-slave architecture.
+
+HDFS:
+Distributes large datasets and stores in hdfs
+Files are stored in the hdfs in worker nodes
+
+Storing file in HDFS:
+
+login to GCP Dataproc and enable the API setting.
+create a cluster with region-us-central-1 and other default settings
+4 worker nodes with 2 data nodes each= total 8
+ssh to the worker node
+select a git link with a file to download
+commands in linux:
+pwd #get the home path /home/username
+ls
+wget <getlink>
+ls #file in home directory
+<since hdfs is in worker nodes and master has to connect to worker nodes to access hdfs>
+hadoop fs -ls #list the files in hdfs in worker nodes
+hadoop fs -mkdir /user/username #create directory
+hadoop fs -mkdir /data
+<from home directory>
+hadoop fs -put <filename> /user/username#move the file from home to hdfs users directory
+touch readme.txt #in home dir
+hadoop fs -put readme.txt /user/username
+<get file from worker to master>
+hadoop fs -get <filename> . #get file to present dir
+ls
+
+MapReduce: 
+way of sending computational task to a distributed file system
+MR job usually splits the input dataset into independent chunks processed by MAP tasks in parallel manner. The framework sorts output of the maps, which are then input to the REDUCE tasks. Both the input and output of the job are stored in file-system
+
+Resource Manager/Job tracker is the master and Node manager/Task tracker is the slave here.
+
+In Hadoop version 1.0, MR performed both performance and resource management func resulting in scalability issues.
+
+YARN:
+Yet Another Resource Negotiator - introduced in Hadoop version 2.0
+relieve MR by taking over resource managemnet responsibilty and job scheduling.
+
+YARN started giving hadoop the ability to run non-MR jobs such as Spark within hadoop framework
+
+HIVE:
+SQL like query tool to process data stored in HDFS
+written on MR
+only process Structured data
+Not a DB just point to data in hdfs
+stores METADATA(data about data) in hdfs, in a RDB called HIVE METASTORE outside hdfs
+HiveQL is the language close to SQL
+
+Querying using HIVE:
+
+hadoop fs -put filename /user/username/data
+cat filename
+hadoop fs -cat /user/username/data/filename
+hive
+<hive shell>
+show databases;
+create database if not exists futurex;
+show tables;
+create table tablename( age INT,salary FLOAT,gender STRING,...)ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' LOCATION '/user/username/data' TBLPROPERTIES ("skip.header.line.count"="1");
+select * from tablename;#converted into MP and got executed in cluster using YARN
+
+<in linux>
+cp filename file2
+hadoop fs -put file2 /user/usename/data
+hadoop fs -ls
+
+<in hive>
+select * from tablename;#2 files data
+drop table tablename;
+
+<linux>
+hadoop fs -ls /data
+#diretory is deleted since the table is deleted in hive
+
+<linux>
+hadoop fs - mkdir /data
+<copy 2 files to hdfs>
+
+<in hive>
+create external table tablename( age INT,salary FLOAT,gender STRING,...)ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' LOCATION '/user/username/data' TBLPROPERTIES ("skip.header.line.count"="1");
+
+
+<hive>
+select * from tablename;
+drop table tablename;
+
+<linux>
+hadoop fs -ls /data
+<files are there in the dir unlike the last time
+
+Here the table is deleted in Hive Metastore but the hdfs have the files. Using EXTERNAL keyword while creating the tables in hive does not give full auth to hive.
