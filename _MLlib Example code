@@ -1,0 +1,38 @@
+-------------------------------------Linear Regression--------------------------------------------------------
+
+from pyspark.sql import SparkSession
+spark = SparkSession.builder.appName('lrex').getOrCreate()
+
+from pyspark.ml.regression import LinearRegression
+
+training = spark.read.format('libsvm').load('textfilename.txt')
+training.show()
+
+lr = LinearRegression(featuresCol='features',labelCol='label',predictionCol='prediction')#features and label are the columns that are loaded #to training Df
+
+lrModel = lr.fit(training)
+lrModel.coefficients
+lrModel.intercept
+
+training_summary = lrModel.summary
+training_summary.rootMeanSquaredError
+
+#train test split
+all_data = spark.read.format('libsvm').load('textfilename.txt')
+train_data,test_data = all_data.randomSplit([0.7,0.3])#train_data is 70% and test_data is 30%
+
+train_data.describe().show()
+test_data.describe().show()
+
+correct_model = lr.fit(train_data)
+test_results = correct_model.evaluate(test_data)
+
+test_results.rootMeanSquaredError
+
+unlabeled_data = test_data.select('features')
+unlabeled_data.show()
+
+predictions = correct_model.transform(unlabeled_data)
+predictions.show()
+
+

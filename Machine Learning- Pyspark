@@ -1,0 +1,31 @@
+Book Suggestion - Introduction to Statistical Learning by Gareth James
+
+*ML is a method of Data Analysis that automates analytical model building
+
+used for- fraud detection, credt score etc...
+
+data Aauisition -- data cleaning -- Model Traning & building-- Model Testing--Model Deployment
+                                 -- Test Data---
+                                 
+                                 
+Spark MLlib
+1) Supervised Learning - labeled examples(desired output is known)
+uses methods like classification, regression, prediction and gradient boosting, SL uses patterns to predict values if the label on additional unlabeled data
+used in apps where historical data predicts likely future events
+2) unsupervised learning - used against data that has no historical labels. goal is to explore the data and fins some structure
+popular techniques incluse slef-organizing maps, nearest-neighbour mapping, k-means clustering and singular value decomposition.
+difficult to evaluate results of this model.
+
+RDD - older spark syntax
+Dataframe - new spark syntax
+
+quirks of using MLlib - has one or two columns
+Supervised - Feautures, Labels
+Unsupervised - Features
+
+Linear Regression:
+ex: A father's son's height tends to regress(or drift towards) the mean(avg) height
+least square method -??
+
+
+
